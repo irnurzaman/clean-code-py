@@ -34,7 +34,7 @@ class NasabahApp:
         async with self.client.post(f'{self.rekening_URL}/rekening', json=rekening_request) as resp:
             response = await resp.json()
             if resp.status != 200:
-                remark = await response['remark'] 
+                remark = response['remark'] 
                 try:
                     await self.repo.delete_nasabah(nasabah.cif)
                 except Exception:
