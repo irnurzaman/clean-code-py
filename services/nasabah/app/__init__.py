@@ -26,12 +26,12 @@ class NasabahApp:
         nasabah.cif = self.generate_cif()
 
         try:
-            self.repo.create_nasabah(nasabah)
+            await self.repo.create_nasabah(nasabah)
         except Exception:
             return None, 'NIK sudah terdaftar'
 
-        rekening_request = {'cif': nasabah.cif, 'setoran': request.setoran}
-        async with self.client.post(self.rekening_URL, json=rekening_request) as resp:
+        rekening_request = {'cif': nasabah.cif, 'saldo': request.setoran}
+        async with self.client.post(f'{self.rekening_URL}/rekening', json=rekening_request) as resp:
             response = await resp.json()
             if resp.status != 200:
                 remark = await response['remark'] 
