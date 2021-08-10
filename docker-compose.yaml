@@ -1,0 +1,56 @@
+version: '3.9'
+services:
+  postgresql:
+    networks: 
+      - clean
+    container_name: postgresql
+    build: services/postgresql
+    image: psql
+    ports:
+        - "5432:5432"
+    environment: 
+      - POSTGRES_USER=bds
+      - POSTGRES_PASSWORD=password
+  nasabah:
+    networks: 
+      - clean
+    depends_on:
+      - postgresql
+    build: services/nasabah/
+    image: bds-nasabah
+    container_name: nasabah
+    ports: 
+        - "8000:8000"
+    environment:  
+      - DB_DATABASE=bds
+      - DB_HOST=postgresql
+      - DB_USER=bds
+      - DB_PASSWORD=password
+      - REKENING_HOST=rekening
+      - REKENING_PORT=8001
+      - NASABAH_HOST=0.0.0.0
+      - NASABAH_PORT=8000
+    restart: unless-stopped
+  rekening:
+    networks: 
+      - clean
+    depends_on:
+      - postgresql
+    build: services/rekening/
+    image: bds-rekening
+    container_name: rekening
+    ports:
+        - "8001:8001"
+    environment:  
+      - DB_DATABASE=bds
+      - DB_HOST=postgresql
+      - DB_USER=bds
+      - DB_PASSWORD=password
+      - REKENING_HOST=0.0.0.0
+      - REKENING_PORT=8001
+    restart: unless-stopped
+
+networks:
+  clean:
+      driver: "bridge"
+      name: "clean"

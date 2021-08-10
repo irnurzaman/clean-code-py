@@ -1,8 +1,6 @@
 from logging import log
 import os
-import asyncpg
 import structlog
-import asyncpg
 
 from repository import RekeningRepository
 from app import RekeningApp
